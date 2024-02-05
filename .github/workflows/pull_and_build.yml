@@ -1,0 +1,20 @@
+name: Pull changes & Build
+
+on:
+  schedule:
+    - cron: '0 0 1 * *' # every 1st of the month
+  workflow_dispatch: # on button click
+
+jobs:
+  pull_latest:
+    name: Pull latest changes
+    uses: ./.github/workflows/sync-fork.yml
+
+  build_docker:
+    name: Build Docker image
+    needs: pull_latest
+    if: always()
+    uses: ./.github/workflows/docker.yml
+    with:
+      revision: master
+
